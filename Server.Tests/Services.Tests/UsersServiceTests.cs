@@ -30,7 +30,8 @@ public class UsersServiceTests
             Password = "u1bwRX5aC5IvhSBksPjBwnEwmrEZ6jTWbJmO7ZtV1OSjqz0yv1OHKD0FJQeXpwM6H00dFGvykDVeQkjdcMm6Tu",
             PasswordSalt = "9PP9fEheyvtIkayhIPZ1eAcEdY/CeR7+UycrMK4IXn+jnpPfEA/OydP5isl2sCewF2rRTmmU1eeS77ujlcJIWiX0MZB1Ew==",
             Email = "anlf@itu.dk",
-            Follows = new HashSet<string>() { "123456789123456789123456" }
+            Follows = new HashSet<string>() { "123456789123456789123456" },
+            Followers = new HashSet<string>() { "123456789123456789123456" }
         };
 
         _collection.InsertOne(user1);
@@ -46,7 +47,8 @@ public class UsersServiceTests
             Password = "u1bwRX5aC5IvhSBksPjBwnEwmrEZ6jTWbJmO7ZtV1OSjqz0yv1OHKD0FJQeXpwM6H00dFGvykDVeQkjdcMm6Tu",
             PasswordSalt = "9PP9fEheyvtIkayhIPZ1eAcEdY/CeR7+UycrMK4IXn+jnpPfEA/OydP5isl2sCewF2rRTmmU1eeS77ujlcJIWiX0MZB1Ew==",
             Email = "anlf@itu.dk",
-            Follows = new HashSet<string>() { "123456789123456789123456" }
+            Follows = new HashSet<string>() { "123456789123456789123456" },
+            Followers = new HashSet<string>() { "123456789123456789123456" }
 
         };
 
@@ -56,6 +58,17 @@ public class UsersServiceTests
 
         // Assert
         await AssertInListNoID(expected, actual);
+    }
+
+    [Fact]
+    public async Task GetFollowersAsync_returns_Followers()
+    {
+        var expected = "123456789123456789123456";
+
+        // Not *great* to rely on the class to be tested, in a test. But I dont see how else to get the MongoDB ID out of the DB.
+        var actual = await _usersService.GetFollowersAsync((await _usersService.GetUsernameAsync("2cant"))!.Id!);
+
+        Assert.Equal(expected, actual.FirstOrDefault());
     }
 
     public async Task AssertInListNoID(List<User> expected, List<User> actual)
